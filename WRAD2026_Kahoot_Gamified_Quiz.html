@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WRAD 2026 — Go Orange Quiz</title>
+<style>
+:root{--orange:#d15512;--orange2:#dd6014;--light:#ed7e29;--ink:#18202a;--muted:#68717c;--bg:#f6f7f9;--card:#fff;--green:#19a974;--red:#e84a5f}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(135deg,#fff 0%,#fff6f0 45%,#f6f7f9 100%);color:var(--ink);min-height:100vh}
+.top{height:72px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;letter-spacing:.4px;color:var(--orange);font-size:22px}
+.badge{background:#fff0e8;color:var(--orange);padding:8px 12px;border-radius:999px;font-weight:800;font-size:13px}
+main{max-width:1050px;margin:0 auto;padding:28px 18px 50px}
+.screen{display:none}
+.screen.active{display:block}
+.hero{min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;text-align:center}
+.hero-card{width:min(720px,100%);background:#fff;border-radius:28px;padding:52px 30px;box-shadow:0 18px 60px #d1551220;border:1px solid #f0e4dd}
+.logo{font-size:58px;margin-bottom:8px}
+h1{font-size:clamp(38px,7vw,70px);line-height:.95;margin:8px 0 16px;letter-spacing:-3px}
+h2{font-size:clamp(28px,5vw,48px);letter-spacing:-1.5px;margin:0 0 18px}
+.subtitle{font-size:19px;color:var(--muted);line-height:1.5}
+input{width:min(420px,100%);font-size:20px;padding:16px 18px;border:2px solid #ddd;border-radius:14px;outline:none;margin:18px 0}
+input:focus{border-color:var(--orange)}
+.btn{border:0;border-radius:14px;padding:15px 24px;font-size:17px;font-weight:900;cursor:pointer;background:var(--orange);color:#fff;box-shadow:0 7px 0 #9f3e0c;transition:.12s}
+.btn:active{transform:translateY(5px);box-shadow:0 2px 0 #9f3e0c}
+.btn.secondary{background:#222b35;box-shadow:0 7px 0 #11171c}
+.center{text-align:center}
+.gamebar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+.progress{height:9px;background:#e9ecef;border-radius:999px;overflow:hidden;flex:1}
+.progress>i{display:block;height:100%;background:var(--orange);width:0;transition:width .3s}
+.timer{width:58px;height:58px;border-radius:50%;background:#fff;border:5px solid var(--orange);display:grid;place-items:center;font-weight:1000;font-size:19px}
+.qmeta{display:flex;justify-content:space-between;color:var(--muted);font-weight:800;margin:12px 0}
+.question-card{background:#fff;border-radius:24px;padding:32px;box-shadow:0 12px 42px #0000000c;margin-bottom:18px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.answer{border:0;border-radius:18px;min-height:105px;padding:18px;text-align:left;color:#fff;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 6px 0 #0002;transition:.12s}
+.answer:nth-child(1){background:#d15512} .answer:nth-child(2){background:#2878c8} .answer:nth-child(3){background:#19a974} .answer:nth-child(4){background:#7956b8}
+.answer:hover{filter:brightness(1.06);transform:translateY(-2px)}
+.answer.disabled{cursor:default;opacity:.75;transform:none}
+.answer.correct{outline:5px solid #fff;box-shadow:0 0 0 5px var(--green),0 7px 0 #0002}
+.answer.wrong{outline:5px solid #fff;box-shadow:0 0 0 5px var(--red),0 7px 0 #0002}
+.feedback{text-align:center;font-size:21px;font-weight:900;margin:15px 0;min-height:30px}
+.score-card{background:#fff;border-radius:26px;padding:35px;text-align:center;box-shadow:0 14px 45px #00000010}
+.bigscore{font-size:72px;font-weight:1000;color:var(--orange);letter-spacing:-4px}
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end;margin:25px auto;max-width:650px}
+.place{background:#fff;border-radius:18px;padding:18px;border:1px solid #eee;box-shadow:0 8px 24px #0000000b}
+.place.first{padding-top:32px;border:3px solid var(--orange)}
+.place .num{font-size:30px;font-weight:1000}
+.small{color:var(--muted);font-size:14px}
+@media(max-width:700px){.answers{grid-template-columns:1fr}.question-card{padding:22px}.top{padding:0 16px}h1{letter-spacing:-2px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">🟠 WRAD 2026</div><div class="badge">GO ORANGE • QUIZ</div></header>
+<main>
+<section id="start" class="screen active hero">
+ <div class="hero-card">
+  <div class="logo">🟠</div>
+  <div class="badge">WORLD RADIOTHERAPY AWARENESS DAY</div>
+  <h1>How much do you know?</h1>
+  <p class="subtitle">10 fast-paced questions. Choose the right answer before the clock runs out. Earn more points for speed.</p>
+  <input id="name" maxlength="20" placeholder="Enter your nickname" autocomplete="off">
+  <br><button class="btn" onclick="startGame()">LET'S GO 🚀</button>
+  <p class="small" style="margin-top:22px">Kahoot-inspired • self-contained • no login required</p>
+ </div>
+</section>
+
+<section id="quiz" class="screen">
+ <div class="gamebar"><div class="progress"><i id="bar"></i></div><div class="timer" id="timer">20</div></div>
+ <div class="qmeta"><span id="counter">QUESTION 1 / 10</span><span id="score">0 pts</span></div>
+ <div class="question-card"><h2 id="question"></h2></div>
+ <div id="answers" class="answers"></div>
+ <div id="feedback" class="feedback"></div>
+</section>
+
+<section id="result" class="screen">
+ <div class="score-card">
+  <div class="badge">QUIZ COMPLETE</div>
+  <h2 id="resultTitle">Great job!</h2>
+  <div class="bigscore" id="finalScore">0</div>
+  <p class="subtitle" id="resultText"></p>
+  <div class="podium">
+   <div class="place"><div class="num">🥉</div><b>BRONZE</b><div class="small">0–3999</div></div>
+   <div class="place first"><div class="num">🥇</div><b>GO ORANGE CHAMPION</b><div class="small">8000+</div></div>
+   <div class="place"><div class="num">🥈</div><b>SILVER</b><div class="small">4000–7999</div></div>
+  </div>
+  <button class="btn" onclick="location.reload()">PLAY AGAIN 🔄</button>
+ </div>
+</section>
+</main>
+
+<script>
+const questions=[{"question": "What does radiotherapy mainly use to treat cancer?", "answers": ["High-energy radiation to damage cancer cells", "Chemical drugs injected into the blood", "Surgical removal of the tumor", "Herbal supplements"], "time": 20, "correct": 0}, {"question": "About what share of cancer patients are estimated to need radiotherapy at some point in treatment?", "answers": ["Around half (~50%)", "Almost none (~2%)", "Nearly all (~95%)", "About 10%"], "time": 20, "correct": 0}, {"question": "Which professional operates the treatment machine and delivers radiotherapy to patients day to day?", "answers": ["Radiation Therapy Technologist (RTT)", "Pharmacist", "Anesthesiologist", "Phlebotomist"], "time": 20, "correct": 0}, {"question": "True or False: External beam radiotherapy makes a patient radioactive and unsafe to be near afterward.", "answers": ["False - it does not make you radioactive", "True - avoid contact for 48 hours", "True - avoid contact for a week", "Only true for children"], "time": 20, "correct": 0}, {"question": "When is World Radiotherapy Awareness Day (WRAD) marked each year?", "answers": ["September 7", "October 7", "September 17", "August 7"], "time": 10, "correct": 0}, {"question": "Modern radiotherapy planning (e.g. IMRT) is designed mainly to:", "answers": ["Target the tumor precisely while sparing healthy tissue", "Treat the whole body evenly", "Skip imaging to save time", "Maximize the dose everywhere"], "time": 20, "correct": 0}, {"question": "What is a major radiotherapy access challenge in many low- and middle-income countries?", "answers": ["Shortage of machines and trained staff", "Too many machines and staff", "Radiotherapy is free everywhere", "There is no patient demand"], "time": 20, "correct": 0}, {"question": "What does 'Go Orange' represent in the WRAD campaign?", "answers": ["Global solidarity and awareness for radiotherapy access", "A hospital dress code", "A pharmaceutical brand color", "A national public holiday"], "time": 10, "correct": 0}, {"question": "Which team member is primarily responsible for designing the radiation treatment plan?", "answers": ["Radiation oncologist and medical physics team", "Receptionist only", "Pharmacist only", "Hospital accountant"], "time": 20, "correct": 0}, {"question": "What is one key goal of radiotherapy awareness campaigns?", "answers": ["Improve awareness and access to safe, quality radiotherapy", "Replace all cancer surgery", "Stop cancer screening", "Make every treatment free worldwide"], "time": 20, "correct": 0}];
+let idx=0, score=0, answered=false, timerId=null, seconds=20, player="";
+const letters=["A","B","C","D"];
+
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active")}
+function startGame(){
+ player=(document.getElementById("name").value.trim()||"Player").slice(0,20);
+ idx=0;score=0;show("quiz");render();
+}
+function render(){
+ const q=questions[idx]; answered=false; seconds=q.time;
+ document.getElementById("counter").textContent=`QUESTION ${idx+1} / ${questions.length}`;
+ document.getElementById("score").textContent=`${score} pts`;
+ document.getElementById("bar").style.width=`${(idx/questions.length)*100}%`;
+ document.getElementById("question").textContent=q.question;
+ document.getElementById("feedback").textContent="";
+ const wrap=document.getElementById("answers");wrap.innerHTML="";
+ q.answers.forEach((a,i)=>{
+   const b=document.createElement("button");b.className="answer";
+   b.innerHTML=`<span style="opacity:.75">${letters[i]}</span><br>${a}`;
+   b.onclick=()=>choose(i,b);wrap.appendChild(b);
+ });
+ updateTimer();clearInterval(timerId);
+ timerId=setInterval(()=>{seconds--;updateTimer();if(seconds<=0){clearInterval(timerId);choose(-1,null)}},1000);
+}
+function updateTimer(){document.getElementById("timer").textContent=seconds}
+function choose(choice,btn){
+ if(answered)return; answered=true; clearInterval(timerId);
+ const q=questions[idx], correct=choice===q.correct;
+ document.querySelectorAll(".answer").forEach((b,i)=>{b.classList.add("disabled");if(i===q.correct)b.classList.add("correct");if(i===choice&&i!==q.correct)b.classList.add("wrong")});
+ let earned=0;
+ if(correct){earned=1000+Math.round(1000*(seconds/q.time));score+=earned;document.getElementById("feedback").textContent=`✅ Correct! +${earned} points`}
+ else{document.getElementById("feedback").textContent=choice===-1?"⏰ Time's up!":"❌ Not quite — the highlighted answer is correct."}
+ document.getElementById("score").textContent=`${score} pts`;
+ setTimeout(()=>{idx++;if(idx<questions.length)render();else finish()},1450);
+}
+function finish(){
+ clearInterval(timerId);show("result");
+ document.getElementById("finalScore").textContent=score.toLocaleString();
+ const pct=Math.round((score/(questions.length*2000))*100);
+ document.getElementById("resultTitle").textContent=pct>=80?"🔥 Outstanding, "+player+"!":pct>=60?"👏 Great work, "+player+"!":"🧠 Nice try, "+player+"!";
+ document.getElementById("resultText").textContent=`You scored ${score.toLocaleString()} points — about ${pct}% of the maximum. Keep spreading radiotherapy awareness!`;
+}
+</script>
+</body>
+</html>
